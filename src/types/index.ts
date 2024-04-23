@@ -17,26 +17,26 @@ export interface IOrderForm {
 }
 
 // Список для заказа
-export interface IOrder  extends IOrderForm {
-    total: number;
-    items: string[];
+export interface IOrder extends IOrderForm {
+	total: number;
+	items: string[];
 }
 
-//Заполнить каталог
+//Данные о заказе
 export interface IOrderResult {
-    id: string;
-    total: number;
+	id: string;
+	total: number;
 }
 
 //Вид оплаты
-export type PaymentMethod = "online" | "personally";
+export type PaymentMethod = 'online' | 'personally';
 
 //Методы
 export interface IAppState {
-    catalog: ICard[];
-    bascet: ICard[];
-    preview: string | null;
-    order: IOrder | null;
+	catalog: ICard[];
+	bascet: ICard[];
+	preview: string | null;
+	order: IOrder | null;
 }
 
 //Ошибки формы
