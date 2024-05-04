@@ -143,7 +143,7 @@ events.on('formErrorsOrder:change', (errors: Partial<IPaymentForm>) => {
 	order.valid = !payment && !address;
 	order.errors = Object.values({ payment, address })
 		.filter((i) => !!i)
-		.join(', ');
+		.join('.    ');
 });
 
 //Отслеживание валидности формы с почтой и телефоном
@@ -152,10 +152,10 @@ events.on('formErrorsContacts:change', (errors: Partial<IContactsForm>) => {
 	contacts.valid = !email && !phone;
 	contacts.errors = Object.values({ email, phone })
 		.filter((i) => !!i)
-		.join(', ');
+		.join('.    ');
 })
 
-//Открытие формы с оплатой и адресом
+//Открыть форму с оплатой и адресом
 events.on('order:open', () => {
 	appData.order.items = appData.basket.map((item) => item.id);
 		modal.render({
@@ -168,7 +168,7 @@ events.on('order:open', () => {
 		});
 });
 
-//Открытие формы с почтой и телефоном
+//Открыть форму с почтой и телефоном
 events.on('order:submit', () => {
 	modal.render({
 		content: contacts.render({

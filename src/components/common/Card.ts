@@ -1,10 +1,5 @@
 import { Component } from '../base/Component';
-import { ICard } from '../../types';
-
-export interface ICardModal extends ICard {
-	button: string;
-	index: string;
-}
+import { ICardModal } from '../../types';
 
 export interface ICardActions {
 	onClick: (event: MouseEvent) => void;

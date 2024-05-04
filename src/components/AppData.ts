@@ -7,13 +7,8 @@ import {
 	IContactsForm,
 } from '../types/index';
 import { IEvents } from './base/events';
+import { IAppState } from '../types'
 
-export interface IAppState {
-	catalog: ICard[];
-	basket: ICard[];
-	order: IOrder | null;
-	fixed: boolean;
-}
 
 export type CatalogChangeEvent = {
 	catalog: ICard[];
