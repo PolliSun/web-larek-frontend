@@ -28,7 +28,6 @@ export class Form<T> extends Component<IForm> {
 		this.container.addEventListener('submit', (e: Event) => {
 			e.preventDefault();
 			this.events.emit(`${this.container.name}:submit`);
-			this._submit.disabled = false;
 		});
 	}
 

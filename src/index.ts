@@ -1,30 +1,29 @@
 import './scss/styles.scss';
-import { EventEmitter} from './components/base/events';
+import { EventEmitter } from './components/base/events';
 import { CardsApi } from './components/LarekAPI';
 import { CDN_URL, API_URL } from './utils/constants';
 import { Modal } from './components/common/Modal';
-import { ensureElement, cloneTemplate} from '../src/utils/utils';
+import { ensureElement, cloneTemplate } from '../src/utils/utils';
 import { Page } from './components/common/Page';
-import { AppState, CatalogChangeEvent} from './components/AppData';
-import { Card} from './components/common/Card';
-import { ICard, IPaymentForm, IContactsForm } from './types'
+import { AppState, CatalogChangeEvent } from './components/AppData';
+import { Card } from './components/common/Card';
+import { ICard, IPaymentForm, IContactsForm } from './types';
 import { Basket } from './components/common/Basket';
-import { Order, Contact} from './components/common/Order'
-import {Success} from './components/common/Success';
+import { Order, Contact } from './components/common/Order';
+import { Success } from './components/common/Success';
 
 const events = new EventEmitter();
 const api = new CardsApi(CDN_URL, API_URL);
 const appData = new AppState({}, events);
 const page = new Page(document.body, events);
 
-
 const cardCatalogTemplate = ensureElement<HTMLTemplateElement>('#card-catalog');
 const cardPreviewTemplate = ensureElement<HTMLTemplateElement>('#card-preview');
-const basketTemplate = ensureElement<HTMLTemplateElement>("#basket");
-const cardBasketTemplate = ensureElement<HTMLTemplateElement>("#card-basket");
-const addressFormTemplate = ensureElement<HTMLTemplateElement>("#order");
-const contactsFormTemplate = ensureElement<HTMLTemplateElement>("#contacts");
-const successTemplate = ensureElement<HTMLTemplateElement>("#success");
+const basketTemplate = ensureElement<HTMLTemplateElement>('#basket');
+const cardBasketTemplate = ensureElement<HTMLTemplateElement>('#card-basket');
+const addressFormTemplate = ensureElement<HTMLTemplateElement>('#order');
+const contactsFormTemplate = ensureElement<HTMLTemplateElement>('#contacts');
+const successTemplate = ensureElement<HTMLTemplateElement>('#success');
 
 const basket = new Basket(cloneTemplate(basketTemplate), events);
 const modal = new Modal(ensureElement<HTMLElement>('#modal-container'), events);
@@ -62,12 +61,14 @@ events.on<CatalogChangeEvent>('items:changed', () => {
 events.on('card:select', (item: ICard) => {
 	const card = new Card(cloneTemplate(cardPreviewTemplate), {
 		onClick: () => {
-			card.button = appData.findFromBasket(item)? 'В корзину' : 'Удалить из корзины';
+			card.button = appData.findFromBasket(item)
+				? 'В корзину'
+				: 'Удалить из корзины';
 			if (!appData.findFromBasket(item)) {
-                appData.addToBasket(item);
-            } else {
-                appData.removeFromBasket(item);
-            };
+				appData.addToBasket(item);
+			} else {
+				appData.removeFromBasket(item);
+			}
 		},
 	});
 
@@ -78,7 +79,7 @@ events.on('card:select', (item: ICard) => {
 			image: item.image,
 			description: item.description,
 			price: item.price,
-			button: appData.findFromBasket(item)?  'Удалить из корзины' : 'В корзину',
+			button: appData.findFromBasket(item) ? 'Удалить из корзины' : 'В корзину',
 		}),
 	});
 });
@@ -89,12 +90,12 @@ events.on('basket:open', () => {
 });
 
 events.on('basket:changed', (items: ICard[]) => {
-    page.counter = appData.basket.length;
+	page.counter = appData.basket.length;
 	basket.items = appData.basket.map((item, index) => {
 		const card = new Card(cloneTemplate(cardBasketTemplate), {
-            onClick: () => {
-                appData.removeFromBasket(item);
-            }
+			onClick: () => {
+				appData.removeFromBasket(item);
+			},
 		});
 
 		return card.render({
@@ -104,24 +105,26 @@ events.on('basket:changed', (items: ICard[]) => {
 		});
 	});
 
-    if (appData.basket.length > 0) {
+	if (appData.basket.length > 0) {
 		basket.toggleBasketButton(false);
 	} else {
 		basket.toggleBasketButton(true);
-	};
+	}
 
-    basket.total = appData.getTotal();
+	basket.total = appData.getTotal();
 });
 
 //Информация о заказе и данных с полей
 events.on('contacts:submit', () => {
 	appData.order.total = appData.getTotal();
 
-    api
+	api
 		.orderCards(appData.order)
 		.then(() => {
 			const success = new Success(cloneTemplate(successTemplate), {
-				onClick: () => {modal.close();},
+				onClick: () => {
+					modal.close();
+				},
 			});
 
 			success.total = `Списано ${appData.order.total} синапсов`;
@@ -132,7 +135,6 @@ events.on('contacts:submit', () => {
 			modal.render({
 				content: success.render({}),
 			});
-			
 		})
 		.catch((error) => console.error(error));
 });
@@ -153,19 +155,20 @@ events.on('formErrorsContacts:change', (errors: Partial<IContactsForm>) => {
 	contacts.errors = Object.values({ email, phone })
 		.filter((i) => !!i)
 		.join('.    ');
-})
+});
 
 //Открыть форму с оплатой и адресом
 events.on('order:open', () => {
 	appData.order.items = appData.basket.map((item) => item.id);
-		modal.render({
-			content: order.render({
-				payment: '',
-				address: '',
-				valid: false,
-				errors: [],
-			})
-		});
+	modal.render({
+		content: order.render({
+			address: '',
+			valid: false,
+			errors: [],
+		}),
+	});
+	appData.clearOrder();
+	order.clearAltButtons();
 });
 
 //Открыть форму с почтой и телефоном
@@ -176,7 +179,7 @@ events.on('order:submit', () => {
 			email: '',
 			valid: false,
 			errors: [],
-		})
+		}),
 	});
 });
 
