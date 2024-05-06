@@ -32,10 +32,6 @@ export class Page extends Component<IPage> {
 	}
 
 	set fixed(value: boolean) {
-		if (value) {
-			this._wrepper.classList.remove('page__wrapper_locked');
-		} else {
-			this._wrepper.classList.add('page__wrapper_locked');
-		}
+		this.toggleClass(this._wrepper, 'page__wrapper_locked', value);
 	}
 }

@@ -116,10 +116,8 @@ events.on('basket:changed', (items: ICard[]) => {
 
 //Информация о заказе и данных с полей
 events.on('contacts:submit', () => {
-	appData.order.total = appData.getTotal();
-
 	api
-		.orderCards(appData.order)
+		.orderCards(appData.getOrderData())
 		.then(() => {
 			const success = new Success(cloneTemplate(successTemplate), {
 				onClick: () => {
@@ -127,9 +125,9 @@ events.on('contacts:submit', () => {
 				},
 			});
 
-			success.total = `Списано ${appData.order.total} синапсов`;
+			success.total = `Списано ${appData.getTotal()} синапсов`;
 			appData.clearBasket();
-			appData.clearOrder();
+			appData.clearForm();
 			order.clearAltButtons();
 
 			modal.render({
@@ -159,7 +157,6 @@ events.on('formErrorsContacts:change', (errors: Partial<IContactsForm>) => {
 
 //Открыть форму с оплатой и адресом
 events.on('order:open', () => {
-	appData.order.items = appData.basket.map((item) => item.id);
 	modal.render({
 		content: order.render({
 			address: '',
@@ -167,7 +164,7 @@ events.on('order:open', () => {
 			errors: [],
 		}),
 	});
-	appData.clearOrder();
+	appData.clearForm();
 	order.clearAltButtons();
 });
 
@@ -205,12 +202,12 @@ events.on(
 	}
 );
 
-//Снимаем блокировку страницы если открыта модалка
+//Блокируем прокрутку страницы если открыта модалка
 events.on('modal:open', () => {
-	page.fixed = false;
+	page.fixed = true;
 });
 
-//Блокируем прокрутку страницы если открыта модалка
+//Снимаем блокировку страницы если закрыта модалка
 events.on('modal:close', () => {
-	page.fixed = true;
+	page.fixed = false;
 });

@@ -53,23 +53,11 @@ export class Card extends Component<ICardModal> {
 
 	set category(value: string) {
 		this.setText(this._category, value);
-		this._category.classList.toggle(
-			'card__category_soft',
-			value === 'софт-скил'
-		);
-		this._category.classList.toggle('card__category_other', value === 'другое');
-		this._category.classList.toggle(
-			'card__category_additional',
-			value === 'дополнительное'
-		);
-		this._category.classList.toggle(
-			'card__category_button',
-			value === 'кнопка'
-		);
-		this._category.classList.toggle(
-			'card__category_hard',
-			value === 'хард-скил'
-		);
+		this.toggleClass(this._category, 'card__category_soft', value === 'софт-скил');
+    	this.toggleClass(this._category, 'card__category_other', value === 'другое');
+    	this.toggleClass(this._category, 'card__category_additional', value === 'дополнительное');
+    	this.toggleClass(this._category, 'card__category_button', value === 'кнопка');
+    	this.toggleClass(this._category, 'card__category_hard', value === 'хард-скил');
 	}
 
 	get title(): string {

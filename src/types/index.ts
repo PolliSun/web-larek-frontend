@@ -16,7 +16,7 @@ export interface IBasketModal extends ICard {
 export interface ICardModal extends ICard {
 	button: string;
 	index: string;
-}
+} 
 
 export interface IForm {
 	valid: boolean;
@@ -39,6 +39,8 @@ export interface IContactsForm {
 	phone: string;
 }
 
+export type IInfoForm = IPaymentForm & IContactsForm;
+
 export interface IOrder extends IPaymentForm, IContactsForm {
 	items: string[];
 	total: number;
@@ -60,7 +62,7 @@ export interface IModal {
 export interface IAppState {
 	catalog: ICard[];
 	basket: ICard[];
-	order: IOrder | null;
+	order: IInfoForm | null;
 	fixed: boolean;
 }
 

@@ -5,10 +5,9 @@ import {
 	FormErrors,
 	IPaymentForm,
 	IContactsForm,
+	IInfoForm,
 } from '../types/index';
-import { IEvents } from './base/events';
-import { IAppState } from '../types'
-
+import { IAppState } from '../types';
 
 export type CatalogChangeEvent = {
 	catalog: ICard[];
@@ -18,30 +17,25 @@ export class AppState extends Model<IAppState> {
 	catalog: ICard[];
 	basket: ICard[] = [];
 
-	order: IOrder = {
+	order: IInfoForm = {
 		address: '',
 		payment: '',
 		email: '',
 		phone: '',
-		items: [],
-		total: null,
 	};
 
 	formErrors: FormErrors = {};
 
-	setCatalog(items: ICard[]) {
-		function getProduct(item: ICard, events: IEvents): ICard {
-			return {
-				id: item.id,
-				description: item.description,
-				image: item.image,
-				title: item.title,
-				category: item.category,
-				price: item.price,
-			};
-		}
+	getOrderData(): IOrder {
+		return {
+			...this.order,
+			items: this.basket.map((item) => item.id),
+			total: this.getTotal(),
+		};
+	}
 
-		this.catalog = items.map((item) => getProduct(item, this.events));
+	setCatalog(items: ICard[]) {
+		this.catalog = items;
 		this.emitChanges('items:changed', { catalog: this.catalog });
 	}
 
@@ -60,24 +54,20 @@ export class AppState extends Model<IAppState> {
 	}
 
 	reloadBasket() {
-		this.emitChanges('counter:changed', this.basket);
 		this.emitChanges('basket:changed', this.basket);
 	}
 
 	clearBasket() {
 		this.basket = [];
-		this.order.items = [];
 		this.reloadBasket();
 	}
 
-	clearOrder() {
+	clearForm() {
 		this.order = {
 			payment: '',
 			address: '',
 			email: '',
 			phone: '',
-			items: [],
-			total: null,
 		};
 	}
 
